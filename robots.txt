@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://copidiaz17.github.io/claudio-basualdo/sitemap.xml
+Sitemap: https://claudio-basualdo.onrender.com/sitemap.xml
