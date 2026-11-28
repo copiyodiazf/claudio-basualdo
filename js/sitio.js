@@ -27,6 +27,16 @@ document.querySelectorAll('[data-capitulos]').forEach(sec => {
   sec.querySelectorAll('.historia-textos article').forEach(a => obs.observe(a))
 })
 
+// ---- contador (Google Analytics, solo en la página real): cada consulta por WhatsApp y cada llamada
+const contar = (evento, donde) => { if (typeof gtag === 'function') gtag('event', evento, { donde }) }
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href*="wa.me/"], a[href^="tel:"]')
+  if (!a) return
+  // de qué parte de la página: el botón flotante o la sección (contacto, servicios…)
+  const donde = a.classList.contains('wa-flotante') ? 'botón flotante' : a.closest('[id]')?.id || 'página'
+  contar(a.href.startsWith('tel:') ? 'llamada' : 'consulta_whatsapp', donde)
+})
+
 // ---- consulta guiada → WhatsApp
 document.querySelectorAll('form.formulario').forEach(form => {
   form.addEventListener('submit', e => {
@@ -50,6 +60,7 @@ document.querySelectorAll('form.formulario').forEach(form => {
       return
     }
     falta.hidden = true
+    contar('consulta_whatsapp', `consulta guiada: ${form.dataset.servicio}`)
     const mensaje = `Hola, Claudio. Te escribo desde tu página. Quiero consultar por *${form.dataset.servicio}*.\n\n${lineas.join('\n')}`
     window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje)}`, '_blank', 'noopener')
   })
